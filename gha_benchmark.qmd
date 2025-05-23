@@ -9,6 +9,8 @@ execute:
   echo: true
   # Show warnings
   warning: false
+  # Cache code results
+  cache: false
   # option messages is in the Option chunk for R
 format: 
   html:
