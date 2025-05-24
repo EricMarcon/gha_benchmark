@@ -217,6 +217,22 @@ M_time %>%
     scale_y_log10()
 ```
 
+Temps d'exécution
+
+```{r}
+tibble(M_time)
+```
+
+```{r}
+#| label: TimeModelCode
+# Model
+M_time %>% 
+  mutate(logTime = log(Time), logSize = log(Size)) ->
+  M_time_log
+M_time_lm <- lm(logTime ~ logSize, data = M_time_log) 
+summary(M_time_lm)
+```
+
 ```{r}
 #| label: TestMemCode
 #| 
