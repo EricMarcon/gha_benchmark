@@ -62,7 +62,7 @@ knitr::knit_hooks$set(
 # Delete this chunk if you don't use R
 
 # Add necessary packages here
-packages <- c("tidyverse", "benchmarkme")
+packages <- c("tidyverse", "benchmarkme", "spatstat", "dbmss", "microbenchmark")
 # Install them
 install_packages(packages)
 
@@ -109,4 +109,129 @@ get_platform_info()
 ```{r}
 res <- benchmark_std(runs = 3)
 plot(res)
+```
+
+## Test d'un cas réel
+
+```{r}
+#| label: ParamsCSRCode
+library("tidyverse")
+library("spatstat")
+library("dbmss")
+
+par_points_nb <- 5000
+par_case_ratio <- 1/20
+par_size_gamma_shape <- 0.95
+par_size_gamma_scale  <- 10
+```
+
+```{r}
+#| label: XcsrCode
+X_csr <- function(
+    points_nb,
+    case_ratio = par_case_ratio,
+    size_gamma_shape = par_size_gamma_shape,
+    size_gamma_scale = par_size_gamma_scale) {
+  points_nb %>% 
+    runifpoint() %>% 
+    as.wmppp() ->
+    X
+  cases_nb <- round(points_nb *  case_ratio)
+  controls_nb <- points_nb - cases_nb
+  c(rep("Control", controls_nb), rep("Case", cases_nb)) %>% 
+    as.factor() ->
+    X$marks$PointType
+  rgamma(
+    X$n, 
+    shape = size_gamma_shape, 
+    scale = size_gamma_scale
+  ) %>% 
+    ceiling() ->
+    X$marks$PointWeight
+  X
+}
+
+# Example
+X <- X_csr(par_points_nb)
+# Map the cases
+autoplot(X[X$marks$PointType == "Case"])
+```
+
+```{r}
+#| label: ParamsrCode
+r <- c((0:9) / 100, (2:10) / 20)
+```
+
+```{r}
+#| label: XtoMCode
+# Compute M
+X_to_M <- function(X) {
+  X %>% 
+    Mhat(r = r, ReferenceType = "Case") %>% 
+    pull("M")    
+}
+```
+
+```{r}
+#| label: ParamsXSizeCode
+X_sizes <- c(1000, 5000, 10000, 50000, 100000)
+```
+
+```{r}
+#| label: TestTimeCode
+library("microbenchmark")
+test_time <- function(points_nb) {
+  X <- X_csr(points_nb)
+  microbenchmark(X_to_M(X), times = 4L) %>% 
+    pull("time")
+}
+
+X_sizes %>% 
+  sapply(FUN = test_time) %>% 
+  as_tibble() %>% 
+  pivot_longer(cols = everything()) %>% 
+  rename(Size = name) %>% 
+  group_by(Size) %>% 
+  summarise(Time = mean(value) / 1E9, sd = sd(value) / 1E9) %>% 
+  mutate(
+    Size = as.double(
+      plyr::mapvalues(
+        .$Size, 
+        from = paste0("V", seq_along(X_sizes)), 
+        to = X_sizes
+      )
+    )
+  ) -> M_time
+M_time %>% 
+  ggplot(aes(x = Size, y = Time)) +
+    geom_point() +
+    geom_errorbar(aes(ymin = Time - sd, ymax = Time + sd)) +
+    scale_x_log10() +
+    scale_y_log10()
+```
+
+```{r}
+#| label: TestMemCode
+#| 
+# RAM
+library("profmem")
+test_ram <- function(points_nb) {
+  X <- X_csr(points_nb)
+  profmem(X_to_M(X)) %>% 
+    pull("bytes") %>% 
+    sum(na.rm = TRUE)
+}
+sapply(X_sizes, FUN = test_ram) %>% 
+  tibble(Size = X_sizes, RAM = . / 2^20) ->
+  M_ram
+M_ram %>% 
+  ggplot(aes(x = Size, y = RAM)) +
+    geom_point() +
+    geom_line()
+```
+
+```{r}
+#| label: MemModelCode
+# Model
+lm(RAM ~ Size, data = M_ram) %>% summary()
 ```
