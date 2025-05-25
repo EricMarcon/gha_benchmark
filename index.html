@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="index_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="index_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="index_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -116,43 +116,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_cpu</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$vendor_id
-[1] "AuthenticAMD"
+[1] "GenuineIntel"
 
 $model_name
-[1] "AMD EPYC 7763 64-Core Processor"
+[1] "Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz"
 
 $no_of_cores
 [1] 4</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_ram</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>17.2 GB</code></pre>
+<pre><code>15 GB</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_platform_info</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$OS.type
-[1] "windows"
+[1] "unix"
 
 $file.sep
 [1] "/"
 
 $dynlib.ext
-[1] ".dll"
+[1] ".so"
 
 $GUI
-[1] "RTerm"
+[1] "X11"
 
 $endian
 [1] "little"
 
 $pkgType
-[1] "win.binary"
+[1] "mac.binary.big-sur-x86_64"
 
 $path.sep
-[1] ";"
+[1] ":"
 
 $r_arch
-[1] "x64"</code></pre>
+[1] ""</code></pre>
 </div>
 </div>
 <p></p>
@@ -312,13 +312,13 @@ $r_arch
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(M_time)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
-    Size    Time       sd
-   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
-1   1000 0.00402 0.00139 
-2   5000 0.0265  0.000398
-3  10000 0.0959  0.000353
-4  50000 2.30    0.000608
-5 100000 9.19    0.00286 </code></pre>
+    Size    Time      sd
+   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1   1000 0.00372 0.00221
+2   5000 0.00906 0.00138
+3  10000 0.0321  0.00432
+4  50000 0.567   0.0713 
+5 100000 1.96    0.0424 </code></pre>
 </div>
 </div>
 <p></p>
@@ -336,23 +336,23 @@ Call:
 lm(formula = logTime ~ logSize, data = M_time_log)
 
 Residuals:
-       1        2        3        4        5 
- 0.44389 -0.43651 -0.34055  0.06875  0.26443 
+      1       2       3       4       5 
+ 0.6803 -0.7271 -0.4518  0.1230  0.3755 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept) -17.8319     1.1392  -15.65 0.000567
-logSize       1.7185     0.1195   14.39 0.000728
-               
-(Intercept) ***
-logSize     ***
+(Intercept) -16.1363     1.7418  -9.264  0.00266
+logSize       1.4276     0.1826   7.816  0.00436
+              
+(Intercept) **
+logSize     **
 ---
 Signif. codes:  
 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.439 on 3 degrees of freedom
-Multiple R-squared:  0.9857,    Adjusted R-squared:  0.9809 
-F-statistic:   207 on 1 and 3 DF,  p-value: 0.000728</code></pre>
+Residual standard error: 0.6712 on 3 degrees of freedom
+Multiple R-squared:  0.9532,    Adjusted R-squared:  0.9376 
+F-statistic: 61.09 on 1 and 3 DF,  p-value: 0.00436</code></pre>
 </div>
 </div>
 <p></p>
