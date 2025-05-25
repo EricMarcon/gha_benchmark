@@ -314,11 +314,11 @@ $r_arch
 <pre><code># A tibble: 5 × 3
     Size    Time        sd
    &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
-1   1000 0.00366 0.00285  
-2   5000 0.00614 0.000114 
-3  10000 0.0183  0.0000720
-4  50000 0.381   0.00350  
-5 100000 1.51    0.0353   </code></pre>
+1   1000 0.00345 0.00225  
+2   5000 0.00660 0.0000890
+3  10000 0.0182  0.000120 
+4  50000 0.379   0.00242  
+5 100000 1.52    0.0262   </code></pre>
 </div>
 </div>
 <p></p>
@@ -337,12 +337,12 @@ lm(formula = logTime ~ logSize, data = M_time_log)
 
 Residuals:
       1       2       3       4       5 
- 0.8719 -0.8309 -0.6985  0.1184  0.5390 
+ 0.8290 -0.7558 -0.7051  0.1012  0.5307 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept) -16.0196     2.2436  -7.140  0.00566
-logSize       1.3805     0.2353   5.868  0.00987
+(Intercept) -16.0788     2.1437  -7.501  0.00491
+logSize       1.3870     0.2248   6.170  0.00857
               
 (Intercept) **
 logSize     **
@@ -350,9 +350,9 @@ logSize     **
 Signif. codes:  
 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.8647 on 3 degrees of freedom
-Multiple R-squared:  0.9198,    Adjusted R-squared:  0.8931 
-F-statistic: 34.43 on 1 and 3 DF,  p-value: 0.009873</code></pre>
+Residual standard error: 0.8261 on 3 degrees of freedom
+Multiple R-squared:  0.927, Adjusted R-squared:  0.9026 
+F-statistic: 38.07 on 1 and 3 DF,  p-value: 0.008569</code></pre>
 </div>
 </div>
 <p></p>
@@ -414,9 +414,36 @@ F-statistic: 8.4e+07 on 1 and 3 DF,  p-value: 2.864e-12</code></pre>
 </div>
 </div>
 <p></p>
+<p>Temps d’exécution</p>
+<p></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Time to compute 100000 points, in seconds</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Mtime_1E5_s <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(M_time<span class="sc">$</span>Time[<span class="dv">5</span>])</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1000 simulations, in minutes</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>Mtime_1E5_1000_min <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="sc">*</span> Mtime_1E5_s <span class="sc">/</span> <span class="dv">60</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 5 million points, in minutes</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>Mtime_5E6_min <span class="ot">&lt;-</span> <span class="fu">exp</span>(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    M_time_lm, </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">logSize =</span> <span class="fu">log</span>(<span class="fl">5E6</span>))</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">/</span> <span class="dv">60</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1000 simulations, in days</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>Mtime_5E6_1000_d <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="sc">*</span> Mtime_5E6_min <span class="sc">/</span> <span class="dv">60</span> <span class="sc">/</span> <span class="dv">24</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p></p>
+<div lang="en">
+<p>The calculation time for <em>M</em> is below 2 seconds for a set of 100,000 points on a modern comptuter<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> and requires 25 MB of RAM. Calculating a confidence interval from 1,000 simulations therefore takes less than 33 minutes. For a set of five million points, the power law predicts around 3 minutes of computing time. 1,000 simulations would then take around 2 days.</p>
+</div>
 </section>
 
-</main>
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Notes de bas de page</h2>
+
+<ol>
+<li id="fn1"><p>The results presented here were obtained on a GitHub-hosted runner under Mac OS with a virtual 4-core Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz CPU, similar to a fast laptop computer.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
